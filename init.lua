@@ -228,4 +228,46 @@ require("lazy").setup({
       open_mapping = "<c-s>",
     },
   },
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = { "mfussenegger/nvim-dap" },
+    event = "VeryLazy",
+    config = function()
+      require("dap-python").setup(".venv/Scripts/python")
+    end,
+    keys = {
+      { "<leader>ld", ":lua require('dap-python').test_method()<cr>", desc = "Debug method" },
+      { "<leader>df", ":lua require('dap-python').test_class()<cr>", desc = "Debug class" },
+      { "<leader>ds", "<esc>:lua require('dap-python').debug_selection()<cr>", desc = "Debug selection" },
+    },
+  },
+  {
+    "SergioRibera/cmp-dotenv",
+    event = "VeryLazy",
+    config = function()
+      local cmp = require("cmp")
+      cmp.setup({
+        sources = {
+          {
+            name = "dotenv",
+            -- Defaults
+            option = {
+              path = ".",
+              load_shell = true,
+              item_kind = cmp.lsp.CompletionItemKind.Variable,
+              eval_on_confirm = false,
+              show_documentation = true,
+              show_content_on_docs = true,
+              documentation_kind = "markdown",
+              dotenv_environment = ".*",
+              file_priority = function(a, b)
+                -- Prioritizing local files
+                return a:upper() < b:upper()
+              end,
+            },
+          },
+        },
+      })
+    end,
+  },
 })
