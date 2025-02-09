@@ -7,9 +7,19 @@
 -- sharkdp/fd
 -- bootstrap lazy.nvim, LazyVim and your plugins
 -- set leader key to space
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>")
+-- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+-- if not vim.loop.fs_stat(lazypath) then
+--   -- bootstrap lazy.nvim
+--   vim.fn.system({
+--     "git",
+--     "clone",
+--     "--filter=blob:none",
+--     "https://github.com/folke/lazy.nvim.git",
+--     "--branch=stable",
+--     lazypath,
+--   })
+-- end
+--vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 -- terminal settings
 local powershell_options = {
@@ -24,6 +34,55 @@ local powershell_options = {
 for option, value in pairs(powershell_options) do
   vim.opt[option] = value
 end
+
+local opt = vim.opt
+
+opt.encoding = "utf-8"
+opt.fileencoding = "utf-8"
+
+opt.clipboard = "unnamedplus"
+opt.completeopt = "menu,menuone,noselect"
+opt.mouse = "a"
+
+opt.autowrite = true
+opt.confirm = true
+opt.inccommand = "nosplit"
+opt.laststatus = 0
+opt.list = true
+
+opt.hlsearch = false
+opt.ignorecase = true
+opt.smartcase = true
+
+opt.cursorline = true
+opt.number = true
+opt.relativenumber = true
+
+opt.splitbelow = true
+opt.splitright = true
+
+opt.scrolloff = 4
+opt.sidescrolloff = 8
+opt.winminwidth = 5
+
+opt.expandtab = true
+opt.shiftwidth = 4
+opt.shiftround = true
+opt.tabstop = 4
+
+opt.showmode = false
+opt.signcolumn = "yes"
+opt.termguicolors = true
+--opt.hidden = true
+
+opt.undofile = true
+opt.undolevels = 10000
+
+opt.secure = true
+opt.exrc = true
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>")
 
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>")
@@ -50,224 +109,3 @@ vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
 vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { desc = "Format Code" })
 
 require("config.lazy")
-
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  -- bootstrap lazy.nvim
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
-
-require("lazy").setup({
-  { "catppuccin/nvim", lazy = true, name = "catppuccin", priority = 1000 },
-  { "nvim-tree/nvim-web-devicons", lazy = true },
-  {
-    "L3MON4D3/LuaSnip",
-    event = "VeryLazy",
-    config = function()
-      require("luasnip.loaders.from_lua").load({ paths = "./snippets" })
-    end,
-  },
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
-    },
-    config = function()
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-      require("mason").setup()
-      local mason_lspconfig = require("mason-lspconfig")
-      mason_lspconfig.setup({
-        ensure_installed = { "pyright" },
-      })
-      require("lspconfig").pyright.setup({
-        capabilities = capabilities,
-      })
-    end,
-  },
-  {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "L3MON4D3/LuaSnip",
-      "saadparwaiz1/cmp_luasnip",
-    },
-    config = function()
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-
-      local cmp = require("cmp")
-      local luasnip = require("luasnip")
-
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-        completion = {
-          autocomplete = false,
-        },
-        mapping = cmp.mapping.preset.insert({
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            elseif has_words_before() then
-              cmp.complete()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<s-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<c-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "luasnip" },
-        },
-      })
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    version = false,
-    build = function()
-      require("nvim-treesitter.install").update({ with_sync = true })
-    end,
-    config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "python", "javascript" },
-        auto_install = false,
-        highlight = { enable = true, additional_vim_regex_highlighting = false },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<C-n>",
-            node_incremental = "<C-n>",
-            scope_incremental = "<C-s>",
-            node_decremental = "<C-m>",
-          },
-        },
-      })
-    end,
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    version = false,
-    dependencies = { "nvim-lua/plenary.nvim" },
-    keys = {
-      { "<leader>sf", "<cmd>Telescope git_files<cr>", desc = "Find Files (root dir)" },
-      { "<leader><space>", "<cmd>Telescope buffers<cr>", desc = "Find Buffers" },
-      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search Project" },
-      { "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Search Document Symbols" },
-      { "<leader>sw", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Search Workspace Symbols" },
-    },
-    opts = {
-      extensions = {
-        fzf = {
-          fuzzy = true,
-          override_generic_sorter = true,
-          override_file_sorter = true,
-          case_mode = "smart_case",
-        },
-      },
-    },
-  },
-  {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    build = "make",
-    config = function()
-      require("telescope").load_extension("fzf")
-    end,
-  },
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local null_ls = require("null-ls")
-
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.diagnostics.ruff,
-          null_ls.builtins.formatting.black,
-        },
-      })
-    end,
-  },
-  {
-    "akinsho/toggleterm.nvim",
-    event = "VeryLazy",
-    version = "*",
-    opts = {
-      size = 10,
-      open_mapping = "<c-s>",
-    },
-  },
-  {
-    "mfussenegger/nvim-dap-python",
-    dependencies = { "mfussenegger/nvim-dap" },
-    event = "VeryLazy",
-    config = function()
-      require("dap-python").setup(".venv/Scripts/python")
-    end,
-    keys = {
-      { "<leader>ld", ":lua require('dap-python').test_method()<cr>", desc = "Debug method" },
-      { "<leader>df", ":lua require('dap-python').test_class()<cr>", desc = "Debug class" },
-      { "<leader>ds", "<esc>:lua require('dap-python').debug_selection()<cr>", desc = "Debug selection" },
-    },
-  },
-  {
-    "SergioRibera/cmp-dotenv",
-    event = "VeryLazy",
-    config = function()
-      local cmp = require("cmp")
-      cmp.setup({
-        sources = {
-          {
-            name = "dotenv",
-            -- Defaults
-            option = {
-              path = ".",
-              load_shell = true,
-              item_kind = cmp.lsp.CompletionItemKind.Variable,
-              eval_on_confirm = false,
-              show_documentation = true,
-              show_content_on_docs = true,
-              documentation_kind = "markdown",
-              dotenv_environment = ".*",
-              file_priority = function(a, b)
-                -- Prioritizing local files
-                return a:upper() < b:upper()
-              end,
-            },
-          },
-        },
-      })
-    end,
-  },
-})
