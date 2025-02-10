@@ -7,19 +7,19 @@
 -- sharkdp/fd
 -- bootstrap lazy.nvim, LazyVim and your plugins
 -- set leader key to space
--- local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
--- if not vim.loop.fs_stat(lazypath) then
---   -- bootstrap lazy.nvim
---   vim.fn.system({
---     "git",
---     "clone",
---     "--filter=blob:none",
---     "https://github.com/folke/lazy.nvim.git",
---     "--branch=stable",
---     lazypath,
---   })
--- end
---vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  -- bootstrap lazy.nvim
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 -- terminal settings
 local powershell_options = {
@@ -44,12 +44,6 @@ opt.clipboard = "unnamedplus"
 opt.completeopt = "menu,menuone,noselect"
 opt.mouse = "a"
 
-opt.autowrite = true
-opt.confirm = true
-opt.inccommand = "nosplit"
-opt.laststatus = 0
-opt.list = true
-
 opt.hlsearch = false
 opt.ignorecase = true
 opt.smartcase = true
@@ -70,8 +64,6 @@ opt.shiftwidth = 4
 opt.shiftround = true
 opt.tabstop = 4
 
-opt.showmode = false
-opt.signcolumn = "yes"
 opt.termguicolors = true
 --opt.hidden = true
 
@@ -80,6 +72,8 @@ opt.undolevels = 10000
 
 opt.secure = true
 opt.exrc = true
+
+-- Key mappings
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>")
