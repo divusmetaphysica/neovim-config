@@ -6,9 +6,14 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 return {
-  { "catppuccin/nvim",           lazy = true, name = "catppuccin", priority = 1000 },
-  { "echasnovski/mini.comment",  lazy = true, priority = 1000 },
-  { "echasnovski/mini.surround", lazy = true, priority = 1000 },
+  { "catppuccin/nvim", lazy = true, name = "catppuccin", priority = 1000 },
+  {
+    "L3MON4D3/LuaSnip",
+    event = "VeryLazy",
+    config = function()
+      require("luasnip.loaders.from_lua").load({ paths = "./snippets" })
+    end,
+  },
   {
     "nvim-treesitter/nvim-treesitter",
     version = false,
@@ -38,11 +43,11 @@ return {
     version = false,
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = {
-      { "<leader>sf",      "<cmd>Telescope git_files<cr>",                     desc = "Find Files (root dir)" },
-      { "<leader><space>", "<cmd>Telescope buffers<cr>",                       desc = "Find Buffers" },
-      { "<leader>sg",      "<cmd>Telescope live_grep<cr>",                     desc = "Search Project" },
-      { "<leader>ss",      "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Search Document Symbols" },
-      { "<leader>sw",      "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Search Workspace Symbols" },
+      { "<leader>sf", "<cmd>Telescope git_files<cr>", desc = "Find Files (root dir)" },
+      { "<leader><space>", "<cmd>Telescope buffers<cr>", desc = "Find Buffers" },
+      { "<leader>sg", "<cmd>Telescope live_grep<cr>", desc = "Search Project" },
+      { "<leader>ss", "<cmd>Telescope lsp_document_symbols<cr>", desc = "Search Document Symbols" },
+      { "<leader>sw", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Search Workspace Symbols" },
     },
     opts = {
       extensions = {
@@ -86,8 +91,8 @@ return {
       require("dap-python").setup(".venv/Scripts/python")
     end,
     keys = {
-      { "<leader>ld", ":lua require('dap-python').test_method()<cr>",          desc = "Debug method" },
-      { "<leader>df", ":lua require('dap-python').test_class()<cr>",           desc = "Debug class" },
+      { "<leader>ld", ":lua require('dap-python').test_method()<cr>", desc = "Debug method" },
+      { "<leader>df", ":lua require('dap-python').test_class()<cr>", desc = "Debug class" },
       { "<leader>ds", "<esc>:lua require('dap-python').debug_selection()<cr>", desc = "Debug selection" },
     },
   },
@@ -96,7 +101,7 @@ return {
     config = function()
       require('dotenv').setup({
         enable_on_load = true, -- will load your .env file upon loading a buffer
-        verbose = false,       -- show error notification if .env file is not found and if .env is loaded
+        verbose = false, -- show error notification if .env file is not found and if .env is loaded
       })
     end,
   },

@@ -22,29 +22,21 @@ end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 -- terminal settings
--- local powershell_options = {
---   shell = vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell",
---   shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
---   shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
---   shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
---   shellquote = "",
---   shellxquote = "",
--- }
---
--- for option, value in pairs(powershell_options) do
---   vim.opt[option] = value
--- end
+local powershell_options = {
+  shell = vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell",
+  shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;",
+  shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait",
+  shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode",
+  shellquote = "",
+  shellxquote = "",
+}
+
+for option, value in pairs(powershell_options) do
+  vim.opt[option] = value
+end
 
 local opt = vim.opt
 
-opt.encoding = "utf-8"
-opt.fileencoding = "utf-8"
-
-opt.clipboard = "unnamedplus"
-opt.completeopt = "menu,menuone,noselect"
-opt.mouse = "a"
-
-opt.hlsearch = false
 opt.ignorecase = true
 opt.smartcase = true
 
@@ -65,7 +57,6 @@ opt.shiftround = true
 opt.tabstop = 4
 
 opt.termguicolors = true
---opt.hidden = true
 
 opt.undofile = true
 opt.undolevels = 10000
@@ -95,11 +86,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.keymap.set("n", "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
-vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename Symbol" })
-vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, { desc = "Goto Definition" })
-vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover Documentation" })
-vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { desc = "Format Code" })
 
 require("config.lazy")
