@@ -6,7 +6,6 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 return {
-  { "catppuccin/nvim", lazy = true, name = "catppuccin", priority = 1000 },
   {
     "L3MON4D3/LuaSnip",
     event = "VeryLazy",
@@ -73,15 +72,6 @@ return {
         },
       })
     end,
-  },
-  {
-    "akinsho/toggleterm.nvim",
-    event = "VeryLazy",
-    version = "*",
-    opts = {
-      size = 10,
-      open_mapping = "<c-s>",
-    },
   },
   {
     "mfussenegger/nvim-dap-python",
