@@ -8,7 +8,7 @@
 return {
   { "catppuccin/nvim", lazy = true, name = "catppuccin", priority = 1000 },
   {
-    "222folke/tokyonight.nvim",
+    "folke/tokyonight.nvim",
     priority = 1000,
     config = function()
       --@diagnostic disable-next-line: missing-fields

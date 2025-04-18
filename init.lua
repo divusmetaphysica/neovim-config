@@ -87,4 +87,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.keymap.set("n", "<Up>", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "<Down>", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
+vim.keymap.set("n", "<C-c>", "<Nop>")
+vim.keymap.set({ "n", "v" }, "<C-c>", "<Esc>")
+
+vim.g.python3_host_prog = "~/.virtualenvs/devenv/bin/python"
+
 require("config.lazy")
